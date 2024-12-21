@@ -71,10 +71,75 @@ Automatically act on your data and communicate using third-party services like T
 
 
 # PROGRAM:
+#include"ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+char ssid[]="Sona's A35";
+char pass[]="Sona@1011";
+const int t=25;
+WiFiClient client;
+DHT dht(25, DHT11);
+unsigned long myChannelField = 2759181;
+const int ChannelField1 = 1 ;
+const int ChannelField2 = 2 ;
+const char *myWriteAPIKey="E9U6UMA0U1WYL76I";
+void setup()
+{
+Serial.begin(115200);
+pinMode (t,OUTPUT);
+WiFi.mode(WIFI_STA);
+ThingSpeak.begin(client);
+dht.begin();
+delay(1000);
+}
+void loop()
+{
+if(WiFi.status()!=WL_CONNECTED)
+{
+Serial.print("Attempting to connet to SSID: ");
+Serial.println(ssid);
+while(WiFi.status() != WL_CONNECTED)
+{
+WiFi.begin(ssid, pass);
+Serial.print(".");
+delay(5000);
+}
+Serial.println("\nConnected");
+}
+float temperature = dht.readTemperature();
+float humidity = dht.readHumidity();
+delay(1000);
+Serial.print("Temperature: ");
+Serial.print(temperature);
+21/12/2024, 09:32 Uploading-sensor-data-in-Thing-Speak-cloud/README.md at main · nandika2006/Uploading-sensor-data-in-Thing-Speak-cloud
+https://github.com/nandika2006/Uploading-sensor-data-in-Thing-Speak-cloud/blob/main/README.md 5/6
+Uploading 397898741-c5895f80-f8f8-4277-aa31-e4cfccdb74e7.png…
+Thus the temperature sensor values are updated in the Thing speak using ESP32 controller.
+Serial.println(" *C");
+ThingSpeak.writeField(myChannelField, ChannelField1, temperature,
+myWriteAPIKey);
+Serial.print("Humidity: ");
+Serial.print(humidity);
+Serial.println(" g.m-3");
+ThingSpeak.writeField(myChannelField, ChannelField2, humidity,
+myWriteAPIKey);
+delay(1000);
+}
+
 
 # CIRCUIT DIAGRAM:
+\\
+  ![Screenshot 2024-12-21 191006](https://github.com/user-attachments/assets/9b966534-ee39-48ea-862d-a32ad0624acf)
+
+
 
 # OUTPUT:
+\\
+  ![Screenshot 2024-12-21 191123](https://github.com/user-attachments/assets/c5026a24-de0f-4104-8ef6-a73cb9b5ce0e)
+
+  
+  ![Screenshot 2024-12-21 191134](https://github.com/user-attachments/assets/e985ea79-eb49-40ea-85aa-8c0ac4e5401f)
+
 
 # RESULT:
 
